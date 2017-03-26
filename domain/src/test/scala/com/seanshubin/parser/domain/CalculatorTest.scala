@@ -10,7 +10,7 @@ class CalculatorTest extends FunSuite {
     assert(calculator.evaluate("aaa") === Left(s"Unable to convert 'aaa' to a whole number"))
   }
 
-  ignore("addition") {
+  test("addition") {
     val calculator = createCalculator()
     assert(calculator.evaluate("1+2") === Right(3))
     assert(calculator.evaluate("2+2") === Right(4))

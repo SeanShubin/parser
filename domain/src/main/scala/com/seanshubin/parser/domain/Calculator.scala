@@ -1,5 +1,7 @@
 package com.seanshubin.parser.domain
 
+import com.seanshubin.parser.domain.ParseTree.ParseTreeLeaf
+
 class Calculator {
   def evaluate(s: String): Either[String, Int] = {
     import Calculator._
@@ -24,11 +26,11 @@ object Calculator {
   }
 
   def generateParseTree(tokens: Seq[CalculatorToken]): Either[String, ParseTree[CalculatorToken]] = {
-    Right(ParseTree.Leaf[CalculatorToken](tokens.head.asInstanceOf[CalculatorToken.Number]))
+    Right(ParseTreeLeaf[CalculatorToken]("number", tokens.head.asInstanceOf[CalculatorToken.Number]))
   }
 
   def assemble(parseTree: ParseTree[CalculatorToken]): Either[String, Int] = {
-    val calculatorToken: CalculatorToken = parseTree.asInstanceOf[ParseTree.Leaf[CalculatorToken]].value
+    val calculatorToken: CalculatorToken = parseTree.asInstanceOf[ParseTreeLeaf[CalculatorToken]].value
     val number = calculatorToken.asInstanceOf[CalculatorToken.Number]
     val value = number.value
     Right(value)
