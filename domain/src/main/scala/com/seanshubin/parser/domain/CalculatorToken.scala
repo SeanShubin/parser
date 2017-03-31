@@ -4,8 +4,15 @@ sealed trait CalculatorToken
 
 object CalculatorToken {
 
-  case class Number(value: Int) extends CalculatorToken
+  case class CalculatorNumber(value: Int) extends CalculatorToken {
+    override def toString: String = value.toString
+  }
 
-  object Plus extends CalculatorToken
+  object Plus extends CalculatorToken {
+    override def toString: String = "Plus"
+  }
 
+  object Whitespace extends CalculatorToken {
+    override def toString: String = "Whitespace"
+  }
 }

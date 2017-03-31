@@ -1,8 +1,26 @@
 package com.seanshubin.parser.domain
 
+import com.seanshubin.parser.domain.CalculatorToken.Whitespace
 import org.scalatest.FunSuite
 
 class CalculatorTest extends FunSuite {
+  test("foo") {
+    val s = "1 + 2"
+    val tokenIterator = stringToTokenIterator(s)
+    val parserRuleLookup = new ParserRuleLookup()
+    val assembler = new ParserAssembler()
+    val parserIterator = new ParserIterator[CalculatorToken, CalculatorExpression](tokenIterator, parserRuleLookup, assembler, "expression")
+    parserIterator.foreach(println)
+  }
+
+  def stringToTokenIterator(s: String): Iterator[CalculatorToken] = {
+    val charIterator = s.toIterator
+    val tokenizerRuleLookup = new TokenizerRuleLookup
+    val assembler = new TokenAssembler
+    val tokenIterator = new ParserIterator[Char, CalculatorToken](charIterator, tokenizerRuleLookup, assembler, "element")
+    tokenIterator.filter(_ != Whitespace)
+  }
+
   test("number") {
     val calculator = createCalculator()
     assert(calculator.evaluate("123") === Right(123))

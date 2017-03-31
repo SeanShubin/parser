@@ -17,22 +17,32 @@ class Calculator {
 
 object Calculator {
   def tokenize(s: String): Either[String, Seq[CalculatorToken]] = {
-    try {
-      Right(Seq(CalculatorToken.Number(s.toInt)))
-    } catch {
-      case _: NumberFormatException =>
-        Left(s"Unable to convert '$s' to a whole number")
-    }
+    val iterator = s.toIterator
+    val cursor = Cursor.fromIterator(iterator)
+    val calculatorRuleLookup = new CalculatorRuleLookup
+    val rule = calculatorRuleLookup.lookupRuleByName("expr")
+    val matched = rule.apply(cursor)
+    ???
+    //    matched match {
+    //      case MatchSuccess(parseTree, cursor) =>
+    //        val assembler = new CalculatorAssembler
+    //        val calculated = assembler.assemble(parseTree)
+    //        Right(calculated)
+    //      case MatchFailure(ruleName, message) =>
+    //        Left(message)
+    //    }
   }
 
   def generateParseTree(tokens: Seq[CalculatorToken]): Either[String, ParseTree[CalculatorToken]] = {
-    Right(ParseTreeLeaf[CalculatorToken]("number", tokens.head.asInstanceOf[CalculatorToken.Number]))
+    //    Right(ParseTreeLeaf[CalculatorToken]("number", tokens.head.asInstanceOf[CalculatorToken.Number]))
+    ???
   }
 
   def assemble(parseTree: ParseTree[CalculatorToken]): Either[String, Int] = {
-    val calculatorToken: CalculatorToken = parseTree.asInstanceOf[ParseTreeLeaf[CalculatorToken]].value
-    val number = calculatorToken.asInstanceOf[CalculatorToken.Number]
-    val value = number.value
-    Right(value)
+    //    val calculatorToken: CalculatorToken = parseTree.asInstanceOf[ParseTreeLeaf[CalculatorToken]].value
+    //    val number = calculatorToken.asInstanceOf[CalculatorToken.Number]
+    //    val value = number.value
+    //    Right(value)
+    ???
   }
 }
