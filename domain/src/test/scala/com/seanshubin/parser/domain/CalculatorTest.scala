@@ -5,12 +5,12 @@ import org.scalatest.FunSuite
 
 class CalculatorTest extends FunSuite {
   test("foo") {
-    val s = "1 + 2"
+    val s = "1 + 2 + 3"
     val tokenIterator = stringToTokenIterator(s)
     val parserRuleLookup = new ParserRuleLookup()
     val assembler = new ParserAssembler()
     val parserIterator = new ParserIterator[CalculatorToken, CalculatorExpression](tokenIterator, parserRuleLookup, assembler, "expression")
-    parserIterator.foreach(println)
+    parserIterator.map(_.compute()).foreach(println)
   }
 
   def stringToTokenIterator(s: String): Iterator[CalculatorToken] = {
