@@ -4,13 +4,11 @@ import com.seanshubin.parser.domain.CalculatorToken.CalculatorNumber
 
 class ParserRuleLookup extends RuleLookup[CalculatorToken] {
   private val rules: Seq[Rule[CalculatorToken]] = Seq(
-    SequenceRule(this, "expression", "num", "remaining-expr-or-end"),
-    OneOfRule(this, "remaining-expr-or-end", "remaining-expr", "end"),
-    SequenceRule(this, "remaining-expr", "plus", "num", "remaining-expr-or-end"),
+    SequenceRule(this, "expression", "num", "remain"),
+    ZeroOrMoreRule(this, "remain", "op-expr"),
+    SequenceRule(this, "op-expr", "plus", "num"),
     ValueTypeRule(this, "num", classOf[CalculatorNumber]),
-    ValueRule(this, "plus", CalculatorToken.Plus),
-    EndRule(this, "end")
-
+    ValueRule(this, "plus", CalculatorToken.Plus)
   )
   private val rulesMap: Map[String, Rule[CalculatorToken]] = rules.map(rule => (rule.thisRuleName, rule)).toMap
 

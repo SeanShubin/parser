@@ -11,7 +11,15 @@ class ParserAssembler extends Assembler[CalculatorToken, CalculatorExpression] {
       case _ => throw new RuntimeException(s"Don't know how to assemble $parseTree")
     }
   }
-
+/*
+  private val rules: Seq[Rule[CalculatorToken]] = Seq(
+    SequenceRule(this, "expression", "num", "remain"),
+    ZeroOrMoreRule(this, "remain", "op-expr"),
+    SequenceRule(this, "op-expr", "plus", "num"),
+    ValueTypeRule(this, "num", classOf[CalculatorNumber]),
+    ValueRule(this, "plus", CalculatorToken.Plus)
+  )
+ */
   private def assembleExpression(parseTree: ParseTree[CalculatorToken]): CalculatorExpression = {
     val children = parseTree.children
     val num = assembleNum(children(0))
