@@ -5,6 +5,7 @@ import com.seanshubin.parser.domain.ParseTree.ParseTreeLeaf
 
 class ParserAssembler extends Assembler[CalculatorToken, CalculatorExpression] {
   override def assemble(parseTree: ParseTree[CalculatorToken]): CalculatorExpression = {
+    println("assemble")
     parseTree.toLines(0).foreach(println)
     parseTree.ruleName match {
       case "expression" => assembleExpression(parseTree)
@@ -21,22 +22,26 @@ class ParserAssembler extends Assembler[CalculatorToken, CalculatorExpression] {
   )
  */
   private def assembleExpression(parseTree: ParseTree[CalculatorToken]): CalculatorExpression = {
+    println("assembleExpression")
+    parseTree.toLines(0).foreach(println)
     val children = parseTree.children
     val num = assembleNum(children(0))
     val remainingExpressionOrEnd = children(1)
     remainingExpressionOrEnd.ruleName match {
-      case "remaining-expr" => CalculatorExpression.Plus(num, assembleRemainingExpression(num, remainingExpressionOrEnd))
+      case "remain" => CalculatorExpression.Plus(num, assembleRemainingExpression(num, remainingExpressionOrEnd))
       case "end" => num
     }
   }
 
   private def assembleRemainingExpression(current: CalculatorExpression, parseTree: ParseTree[CalculatorToken]): CalculatorExpression = {
+    println("assembleRemainingExpression")
+    parseTree.toLines(0).foreach(println)
     val children = parseTree.children
     toPlus(children(0))
     val num = assembleNum(children(1))
     val remainingExpressionOrEnd = children(2)
     remainingExpressionOrEnd.ruleName match {
-      case "remaining-expr" => CalculatorExpression.Plus(num, assembleRemainingExpression(num, remainingExpressionOrEnd))
+      case "remain" => CalculatorExpression.Plus(num, assembleRemainingExpression(num, remainingExpressionOrEnd))
       case "end" => num
     }
   }
@@ -45,9 +50,13 @@ class ParserAssembler extends Assembler[CalculatorToken, CalculatorExpression] {
     CalculatorExpression.Value(toNum(parseTree).value)
   }
 
-  private def toPlus(target: ParseTree[CalculatorToken]): CalculatorToken = target match {
-    case ParseTreeLeaf("plus", CalculatorToken.Plus) => CalculatorToken.Plus
-    case _ => throw new RuntimeException("Plus expected")
+  private def toPlus(target: ParseTree[CalculatorToken]): CalculatorToken = {
+    println("toPlus")
+    target.toLines(0).foreach(println)
+    target match {
+      case ParseTreeLeaf("plus", CalculatorToken.Plus) => CalculatorToken.Plus
+      case _ => throw new RuntimeException("Plus expected")
+    }
   }
 
   private def toNum(target: ParseTree[CalculatorToken]): CalculatorNumber = target match {
