@@ -18,7 +18,7 @@ case class OneOrMoreRule[A](ruleLookup: RuleLookup[A], thisRuleName: String, rul
     val matches: List[MatchSuccess[A]] = applyRemaining(List(firstMatch))
     val childParseTrees = matches.map(_.parseTree)
     val parseTree = ParseTreeBranch(thisRuleName, childParseTrees)
-    MatchSuccess(parseTree, matches.last.cursor)
+    MatchSuccess(matches.last.cursor, parseTree)
   }
 
   private def applyRemaining(resultsSoFar: List[MatchSuccess[A]]): List[MatchSuccess[A]] = {

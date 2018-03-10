@@ -1,5 +1,7 @@
 package com.seanshubin.parser.domain
 
+import scala.annotation.tailrec
+
 trait Cursor[T] {
   def next: Cursor[T]
 
@@ -46,6 +48,20 @@ object Cursor {
     override def value: T = maybeValue.get
 
     override def isEnd: Boolean = maybeValue.isEmpty
+
+    override def toString: String = {
+      reifyToEnd.mkString("[", ", ", "]")
+    }
+
+    private def reifyToEnd: Seq[T] = {
+      reifyToEndRecursive(Nil, this).reverse
+    }
+
+    @tailrec
+    private def reifyToEndRecursive(soFar: List[T], cursor: Cursor[T]): List[T] = {
+      if (cursor.isEnd) soFar
+      else reifyToEndRecursive(cursor.value :: soFar, cursor.next)
+    }
   }
 
 }

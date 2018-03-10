@@ -1,6 +1,7 @@
 package com.seanshubin.parser.domain
 
 import com.seanshubin.parser.domain.CalculatorToken.Whitespace
+import com.seanshubin.parser.domain.MatchResult.{MatchFailure, MatchSuccess}
 import org.scalatest.FunSuite
 
 class CalculatorTest extends FunSuite {
@@ -10,6 +11,7 @@ class CalculatorTest extends FunSuite {
     val parserRuleLookup = new ParserRuleLookup()
     val assembler = new ParserAssembler()
     val parserIterator = new ParserIterator[CalculatorToken, CalculatorExpression](tokenIterator, parserRuleLookup, assembler, "expression")
+    parserIterator.foreach(println)
     parserIterator.map(_.compute()).foreach(println)
   }
 

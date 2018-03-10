@@ -19,15 +19,15 @@ case class SequenceRule[A](ruleLookup: RuleLookup[A], thisRuleName: String, rule
 
     val allResults = loop(Nil, ruleNames.toList, cursor)
     allResults.head match {
-      case MatchSuccess(_, newCursor) =>
+      case MatchSuccess(newCursor, _) =>
         val children = allResults.flatMap {
-          case MatchSuccess(parseTree, _) => Some(parseTree)
+          case MatchSuccess(_, parseTree) => Some(parseTree)
           case _ => None
         }
-        MatchSuccess(ParseTreeBranch(thisRuleName, children.reverse), newCursor)
+        MatchSuccess(newCursor, ParseTreeBranch(thisRuleName, children.reverse))
       case x: MatchFailure[A] =>
         val sequenceString = ruleNames.mkString(", ")
-        MatchFailure(thisRuleName, s"expected sequence: $sequenceString")
+        MatchFailure(cursor, thisRuleName, s"expected sequence: $sequenceString")
     }
   }
 }

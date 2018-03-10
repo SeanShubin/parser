@@ -12,7 +12,7 @@ class ParserIterator[A, B](backingIterator: Iterator[A], ruleLookup: RuleLookup[
     } else {
       currentMatchResult match {
         case x: MatchSuccess[A] => true
-        case MatchFailure(rule, message) =>
+        case MatchFailure(_, rule, message) =>
           throw new RuntimeException(s"Could not match '$rule', $message")
       }
     }
@@ -20,12 +20,12 @@ class ParserIterator[A, B](backingIterator: Iterator[A], ruleLookup: RuleLookup[
 
   override def next(): B = {
     currentMatchResult match {
-      case MatchSuccess(parseTree, newCursor) =>
+      case MatchSuccess(newCursor, parseTree) =>
         val token = assembler.assemble(parseTree)
         currentCursor = newCursor
         currentMatchResult = parse(ruleName, currentCursor)
         token
-      case MatchFailure(rule, message) =>
+      case MatchFailure(_, rule, message) =>
         throw new RuntimeException(s"Could not match '$rule', $message")
     }
   }

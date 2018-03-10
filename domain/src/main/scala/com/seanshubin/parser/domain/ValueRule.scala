@@ -6,13 +6,13 @@ import com.seanshubin.parser.domain.ParseTree.ParseTreeLeaf
 
 case class ValueRule[A](ruleLookup: RuleLookup[A], thisRuleName: String, values: A*) extends Rule[A] {
   override def apply(cursor: Cursor[A]): MatchResult[A] = {
-    if (cursor.isEnd) MatchFailure(thisRuleName, "end of input")
+    if (cursor.isEnd) MatchFailure(cursor, thisRuleName, "end of input")
     else {
       if (values.contains(cursor.value)) {
-        MatchSuccess(ParseTreeLeaf(thisRuleName, cursor.value), cursor.next)
+        MatchSuccess(cursor.next, ParseTreeLeaf(thisRuleName, cursor.value))
       } else {
         val valueString = seqToString(values)
-        MatchFailure(thisRuleName, s"Expected one of: $valueString, but got ${cursor.value} instead")
+        MatchFailure(cursor, thisRuleName, s"Expected one of: $valueString, but got ${cursor.value} instead")
       }
     }
   }

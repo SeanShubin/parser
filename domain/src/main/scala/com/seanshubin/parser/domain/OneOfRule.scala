@@ -7,7 +7,7 @@ case class OneOfRule[A](ruleLookup: RuleLookup[A], thisRuleName: String, ruleNam
     val successfulMatchFromCursor = successfulMatch(_: String, cursor)
     ruleNames.toStream.map(successfulMatchFromCursor).flatten.headOption match {
       case Some(matchResult) => matchResult
-      case None => failure()
+      case None => failure(cursor)
     }
   }
 
@@ -20,8 +20,8 @@ case class OneOfRule[A](ruleLookup: RuleLookup[A], thisRuleName: String, ruleNam
     }
   }
 
-  private def failure(): MatchResult[A] = {
+  private def failure(cursor: Cursor[A]): MatchResult[A] = {
     val ruleNamesString = ruleNames.mkString(", ")
-    MatchFailure(thisRuleName, s"expected one of: $ruleNamesString")
+    MatchFailure(cursor, thisRuleName, s"expected one of: $ruleNamesString")
   }
 }

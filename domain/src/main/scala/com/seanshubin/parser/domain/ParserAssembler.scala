@@ -1,66 +1,48 @@
 package com.seanshubin.parser.domain
 
 import com.seanshubin.parser.domain.CalculatorToken.CalculatorNumber
-import com.seanshubin.parser.domain.ParseTree.ParseTreeLeaf
+import com.seanshubin.parser.domain.ParseTree.{ParseTreeBranch, ParseTreeLeaf}
 
 class ParserAssembler extends Assembler[CalculatorToken, CalculatorExpression] {
   override def assemble(parseTree: ParseTree[CalculatorToken]): CalculatorExpression = {
-    println("assemble")
-    parseTree.toLines(0).foreach(println)
-    parseTree.ruleName match {
-      case "expression" => assembleExpression(parseTree)
-      case _ => throw new RuntimeException(s"Don't know how to assemble $parseTree")
-    }
+    assembleExpression(parseTree)
   }
-/*
-  private val rules: Seq[Rule[CalculatorToken]] = Seq(
-    SequenceRule(this, "expression", "num", "remain"),
-    ZeroOrMoreRule(this, "remain", "op-expr"),
-    SequenceRule(this, "op-expr", "plus", "num"),
-    ValueTypeRule(this, "num", classOf[CalculatorNumber]),
-    ValueRule(this, "plus", CalculatorToken.Plus)
-  )
- */
-  private def assembleExpression(parseTree: ParseTree[CalculatorToken]): CalculatorExpression = {
-    println("assembleExpression")
-    parseTree.toLines(0).foreach(println)
-    val children = parseTree.children
-    val num = assembleNum(children(0))
-    val remainingExpressionOrEnd = children(1)
-    remainingExpressionOrEnd.ruleName match {
-      case "remain" => CalculatorExpression.Plus(num, assembleRemainingExpression(num, remainingExpressionOrEnd))
-      case "end" => num
+
+  def assembleExpression(parseTree: ParseTree[CalculatorToken]): CalculatorExpression = {
+    parseTree match {
+      case ParseTreeBranch("expression", Seq(num, remain)) =>
+        val numberExpression = assembleNum(num)
+        val expression = assembleRemain(numberExpression, remain)
+        expression
     }
   }
 
-  private def assembleRemainingExpression(current: CalculatorExpression, parseTree: ParseTree[CalculatorToken]): CalculatorExpression = {
-    println("assembleRemainingExpression")
-    parseTree.toLines(0).foreach(println)
-    val children = parseTree.children
-    toPlus(children(0))
-    val num = assembleNum(children(1))
-    val remainingExpressionOrEnd = children(2)
-    remainingExpressionOrEnd.ruleName match {
-      case "remain" => CalculatorExpression.Plus(num, assembleRemainingExpression(num, remainingExpressionOrEnd))
-      case "end" => num
+  def assembleRemain(calculatorExpression: CalculatorExpression, remain: ParseTree[CalculatorToken]): CalculatorExpression = {
+    remain match {
+      case ParseTreeBranch("remain", opExpr) =>
+        assembleOpExpr(calculatorExpression, opExpr)
+    }
+  }
+
+  def assembleOpExpr(left: CalculatorExpression, opExprSeq: Seq[ParseTree[CalculatorToken]]): CalculatorExpression = {
+    opExprSeq match {
+      case Nil => left
+      case ParseTreeBranch("op-expr", Seq(plus, num)) :: tail =>
+        assemblePlus(left, plus, assembleOpExpr(assembleNum(num), tail))
+    }
+  }
+
+  def assemblePlus(left: CalculatorExpression, op: ParseTree[CalculatorToken], right: CalculatorExpression): CalculatorExpression = {
+    op match {
+      case ParseTreeLeaf("plus", CalculatorToken.Plus) =>
+        CalculatorExpression.Plus(left, right)
     }
   }
 
   private def assembleNum(parseTree: ParseTree[CalculatorToken]): CalculatorExpression = {
-    CalculatorExpression.Value(toNum(parseTree).value)
-  }
-
-  private def toPlus(target: ParseTree[CalculatorToken]): CalculatorToken = {
-    println("toPlus")
-    target.toLines(0).foreach(println)
-    target match {
-      case ParseTreeLeaf("plus", CalculatorToken.Plus) => CalculatorToken.Plus
-      case _ => throw new RuntimeException("Plus expected")
+    parseTree match {
+      case ParseTreeLeaf("num", CalculatorNumber(value)) =>
+        CalculatorExpression.Value(value)
     }
-  }
-
-  private def toNum(target: ParseTree[CalculatorToken]): CalculatorNumber = target match {
-    case ParseTreeLeaf("num", CalculatorNumber(value)) => CalculatorNumber(value)
-    case _ => throw new RuntimeException("Plus expected")
   }
 }
