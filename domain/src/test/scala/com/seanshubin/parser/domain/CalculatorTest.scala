@@ -11,8 +11,9 @@ class CalculatorTest extends FunSuite {
     val parserRuleLookup = new ParserRuleLookup()
     val assembler = new ParserAssembler()
     val parserIterator = new ParserIterator[CalculatorToken, CalculatorExpression](tokenIterator, parserRuleLookup, assembler, "expression")
-    parserIterator.foreach(println)
-    parserIterator.map(_.compute()).foreach(println)
+    val parsed = parserIterator.toSeq
+    parsed.foreach(println)
+    parsed.map(_.compute()).foreach(println)
   }
 
   def stringToTokenIterator(s: String): Iterator[CalculatorToken] = {
