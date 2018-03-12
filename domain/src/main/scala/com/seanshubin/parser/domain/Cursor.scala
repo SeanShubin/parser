@@ -15,9 +15,11 @@ trait Cursor[T] {
 }
 
 object Cursor {
-  def fromIterator[T](iterator: Iterator[T]): Cursor[T] = new CursorBackedByIterator[T](iterator, (x: T) => false, 0, 0)
+  def fromIterator[T](iterator: Iterator[T]): Cursor[T] =
+    new CursorBackedByIterator[T](iterator, (x: T) => false, 0, 0)
 
-  def fromIterator[T](iterator: Iterator[T], endOfRowFunction: T => Boolean): Cursor[T] = new CursorBackedByIterator[T](iterator, endOfRowFunction, 0, 0)
+  def fromIterator[T](iterator: Iterator[T], endOfRowFunction: T => Boolean): Cursor[T] =
+    new CursorBackedByIterator[T](iterator, endOfRowFunction, 0, 0)
 
   def values[T](begin: Cursor[T], afterEnd: Cursor[T]): Seq[T] = {
     def loop(soFar: List[T], current: Cursor[T]): List[T] = {
@@ -30,7 +32,10 @@ object Cursor {
     theValues
   }
 
-  private class CursorBackedByIterator[T](iterator: Iterator[T], val endOfRowFunction: T => Boolean, val row: Int, val column: Int) extends Cursor[T] {
+  private class CursorBackedByIterator[T](iterator: Iterator[T],
+                                          val endOfRowFunction: T => Boolean,
+                                          val row: Int,
+                                          val column: Int) extends Cursor[T] {
     private val maybeValue: Option[T] =
       if (iterator.hasNext) Some(iterator.next())
       else None
@@ -50,7 +55,8 @@ object Cursor {
     override def isEnd: Boolean = maybeValue.isEmpty
 
     override def toString: String = {
-      reifyToEnd.mkString("[", ", ", "]")
+      val contentString = reifyToEnd.mkString("[", ", ", "]")
+      s"$row:$column:$contentString"
     }
 
     private def reifyToEnd: Seq[T] = {
