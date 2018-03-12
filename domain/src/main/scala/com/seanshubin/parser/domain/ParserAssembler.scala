@@ -3,6 +3,8 @@ package com.seanshubin.parser.domain
 import com.seanshubin.parser.domain.CalculatorToken.CalculatorNumber
 import com.seanshubin.parser.domain.ParseTree.{ParseTreeBranch, ParseTreeLeaf}
 
+import scala.annotation.tailrec
+
 class ParserAssembler extends Assembler[CalculatorToken, CalculatorExpression] {
   override def assemble(parseTree: ParseTree[CalculatorToken]): CalculatorExpression = {
     assembleExpression(parseTree)
@@ -24,11 +26,13 @@ class ParserAssembler extends Assembler[CalculatorToken, CalculatorExpression] {
     }
   }
 
-  def assembleOpExpr(left: CalculatorExpression, opExprSeq: Seq[ParseTree[CalculatorToken]]): CalculatorExpression = {
+  @tailrec
+  private def assembleOpExpr(left: CalculatorExpression, opExprSeq: Seq[ParseTree[CalculatorToken]]): CalculatorExpression = {
     opExprSeq match {
       case Nil => left
       case ParseTreeBranch("op-expr", Seq(plus, num)) :: tail =>
-        assemblePlus(left, plus, assembleOpExpr(assembleNum(num), tail))
+        val newLeft = assemblePlus(left, plus, assembleNum(num))
+        assembleOpExpr(newLeft, tail)
     }
   }
 
