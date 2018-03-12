@@ -2,7 +2,10 @@ package com.seanshubin.parser.domain
 
 import com.seanshubin.parser.domain.MatchResult.{MatchFailure, MatchSuccess}
 
-class ParserIterator[A, B](backingIterator: Iterator[A], ruleLookup: RuleLookup[A], assembler: Assembler[A, B], ruleName: String) extends Iterator[B] {
+class ParserIterator[A, B](backingIterator: Iterator[A],
+                           ruleLookup: RuleLookup[A],
+                           assembler: Assembler[A, B],
+                           ruleName: String) extends Iterator[B] {
   private var currentCursor = Cursor.fromIterator(backingIterator)
   private var currentMatchResult = parse(ruleName, currentCursor)
 
