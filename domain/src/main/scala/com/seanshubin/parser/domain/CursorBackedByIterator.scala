@@ -2,11 +2,7 @@ package com.seanshubin.parser.domain
 
 import scala.annotation.tailrec
 
-class CursorBackedByIterator[T](iterator: AnnotatedIterator[T]) extends Cursor[T] {
-  override val column: Int = iterator.column
-
-  override val row: Int = iterator.row
-
+class CursorBackedByIterator[T](iterator: Iterator[T]) extends Cursor[T] {
   private val maybeValue: Option[T] =
     if (iterator.hasNext) Some(iterator.next())
     else None
@@ -26,7 +22,7 @@ class CursorBackedByIterator[T](iterator: AnnotatedIterator[T]) extends Cursor[T
 
   override def toString: String = {
     val contentString = reifyToEnd.mkString("[", ", ", "]")
-    s"$row:$column:$contentString"
+    contentString
   }
 
   private def reifyToEnd: Seq[T] = {

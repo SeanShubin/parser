@@ -14,16 +14,13 @@ class CalculatorTest extends FunSuite {
     parsed.map(_.compute()).foreach(println)
   }
 
-  def stringToTokenIterator(s: String): AnnotatedIterator[CalculatorToken] = {
-    val charIterator = new AnnotatedCharIterator(s.toIterator)
+  def stringToTokenIterator(s: String): Iterator[CalculatorToken] = {
+    val charIterator = s.toIterator
     val tokenizerRuleLookup = new TokenizerRuleLookup
     val assembler = new TokenAssembler
     val tokenIterator = new ParserIterator[Char, CalculatorToken](
       charIterator, tokenizerRuleLookup, assembler, "element")
-    val filteredTokenIterator = tokenIterator.transformBackingIterator {
-      backingIterator =>
-        backingIterator.filter(CalculatorToken.NoWhitespaceFilter)
-    }
+    val filteredTokenIterator = tokenIterator.filter(_ != CalculatorToken.NoWhitespaceFilter)
     filteredTokenIterator
   }
 

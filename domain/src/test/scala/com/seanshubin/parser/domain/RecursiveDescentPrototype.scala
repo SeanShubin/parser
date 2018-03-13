@@ -22,9 +22,5 @@ object RecursiveDescentPrototype extends App {
     override def value: Token = ???
 
     override def isEnd: Boolean = ???
-
-    override def column: Int = ???
-
-    override def row: Int = ???
   }
 }

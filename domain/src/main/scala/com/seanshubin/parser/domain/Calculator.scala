@@ -3,9 +3,9 @@ package com.seanshubin.parser.domain
 class Calculator {
   def evaluate(s: String): Either[String, Int] = {
     import Calculator._
-    val charIterator = new AnnotatedCharIterator(s.toIterator)
+    val charIterator = s.toIterator
     val tokenIterator = new ParserIterator[Char, CalculatorToken](charIterator, tokenizerRuleLookup, tokenAssembler, "element")
-    //    val filteredTokenIterator:ParserIterator[Char, CalculatorToken] = tokenIterator.filter(_ != Whitespace)
+    //      val filteredTokenIterator:ParserIterator[Char, CalculatorToken] = tokenIterator.filter(_ != Whitespace)
     val parserIterator = new ParserIterator[CalculatorToken, CalculatorExpression](tokenIterator, parserRuleLookup, parserAssembler, "expression")
     val parsed = parserIterator.toIndexedSeq
     Right(parsed.head.compute())
