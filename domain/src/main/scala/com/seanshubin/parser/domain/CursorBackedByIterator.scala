@@ -11,7 +11,7 @@ class CursorBackedByIterator[T](iterator: Iterator[T]) extends Cursor[T] {
   override def next: Cursor[T] = maybeNext match {
     case Some(nextCursor) => nextCursor
     case None =>
-      val nextCursor = new CursorBackedByIterator(iterator)
+      val nextCursor = Cursor.fromIterator(iterator)
       maybeNext = Some(nextCursor)
       nextCursor
   }

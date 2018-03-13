@@ -6,7 +6,7 @@ class ParserIterator[A, B](backingIterator: Iterator[A],
                            ruleLookup: RuleLookup[A],
                            assembler: Assembler[A, B],
                            ruleName: String) extends Iterator[B] {
-  private var currentCursor: Cursor[A] = new CursorBackedByIterator(backingIterator)
+  private var currentCursor: Cursor[A] = Cursor.fromIterator(backingIterator)
   private var currentMatchResult = parse(ruleName, currentCursor)
 
   override def hasNext: Boolean = {
