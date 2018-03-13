@@ -10,7 +10,7 @@ class AnnotatedIteratorTest extends FunSuite {
         |ef
         |""".stripMargin
     val iterator = text.toIterator
-    val annotatedIterator = new AnnotatedIterator(iterator)
+    val annotatedIterator = new AnnotatedCharIterator(iterator)
     assert(annotatedIterator.row === 0)
     assert(annotatedIterator.column === 0)
 
@@ -37,7 +37,7 @@ class AnnotatedIteratorTest extends FunSuite {
   test("row and column cr") {
     val text = "ab\rcd\ref\r"
     val iterator = text.toIterator
-    val annotatedIterator = new AnnotatedIterator(iterator)
+    val annotatedIterator = new AnnotatedCharIterator(iterator)
     assert(annotatedIterator.row === 0)
     assert(annotatedIterator.column === 0)
 
@@ -63,7 +63,7 @@ class AnnotatedIteratorTest extends FunSuite {
   test("row and column lf") {
     val text = "ab\ncd\nef\n"
     val iterator = text.toIterator
-    val annotatedIterator = new AnnotatedIterator(iterator)
+    val annotatedIterator = new AnnotatedCharIterator(iterator)
     assert(annotatedIterator.row === 0)
     assert(annotatedIterator.column === 0)
 
@@ -89,7 +89,7 @@ class AnnotatedIteratorTest extends FunSuite {
   test("row and column crlf") {
     val text = "ab\r\ncd\r\nef\r\n"
     val iterator = text.toIterator
-    val annotatedIterator = new AnnotatedIterator(iterator)
+    val annotatedIterator = new AnnotatedCharIterator(iterator)
     assert(annotatedIterator.row === 0)
     assert(annotatedIterator.column === 0)
 

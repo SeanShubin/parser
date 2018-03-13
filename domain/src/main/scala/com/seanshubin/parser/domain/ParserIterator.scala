@@ -2,11 +2,11 @@ package com.seanshubin.parser.domain
 
 import com.seanshubin.parser.domain.MatchResult.{MatchFailure, MatchSuccess}
 
-class ParserIterator[A, B](backingIterator: Iterator[A],
+class ParserIterator[A, B](backingIterator: AnnotatedIterator[A],
                            ruleLookup: RuleLookup[A],
                            assembler: Assembler[A, B],
-                           ruleName: String) extends Iterator[B] {
-  private var currentCursor = Cursor.fromIterator(backingIterator)
+                           ruleName: String) extends AnnotatedIterator[B] {
+  private var currentCursor: Cursor[A] = new CursorBackedByIterator(backingIterator)
   private var currentMatchResult = parse(ruleName, currentCursor)
 
   override def hasNext: Boolean = {
@@ -32,6 +32,12 @@ class ParserIterator[A, B](backingIterator: Iterator[A],
         throw new RuntimeException(s"Could not match '$rule', $message")
     }
   }
+
+  override def row: Int = backingIterator.row
+
+  override def column: Int = backingIterator.column
+
+  override def transformBackingIterator(transform: Iterator[B] => Iterator[B]): AnnotatedIterator[B] = ???
 
   private def parse(ruleName: String, cursor: Cursor[A]): MatchResult[A] = {
     val rule: Rule[A] = ruleLookup.lookupRuleByName(ruleName)

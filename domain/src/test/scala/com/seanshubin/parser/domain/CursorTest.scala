@@ -60,7 +60,7 @@ class CursorTest extends FunSuite {
   test("row") {
     val text = "abc\ndef"
     val iterator = text.iterator
-    val cursorA = Cursor.fromIterator(iterator, (x:Char) => x == '\n')
+    val cursorA = Cursor.fromIterator(iterator)
     val cursorB = cursorA.next
     val cursorC = cursorB.next
     val cursorNewline = cursorC.next

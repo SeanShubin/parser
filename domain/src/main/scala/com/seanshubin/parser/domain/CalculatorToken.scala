@@ -15,4 +15,6 @@ object CalculatorToken {
   object Whitespace extends CalculatorToken {
     override def toString: String = "Whitespace"
   }
+
+  val NoWhitespaceFilter: CalculatorToken => Boolean = token => token != Whitespace
 }
