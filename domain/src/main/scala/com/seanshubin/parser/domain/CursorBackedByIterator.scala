@@ -3,6 +3,10 @@ package com.seanshubin.parser.domain
 import scala.annotation.tailrec
 
 class CursorBackedByIterator[T](iterator: AnnotatedIterator[T]) extends Cursor[T] {
+  override val column: Int = iterator.column
+
+  override val row: Int = iterator.row
+
   private val maybeValue: Option[T] =
     if (iterator.hasNext) Some(iterator.next())
     else None
@@ -19,10 +23,6 @@ class CursorBackedByIterator[T](iterator: AnnotatedIterator[T]) extends Cursor[T
   override def value: T = maybeValue.get
 
   override def isEnd: Boolean = maybeValue.isEmpty
-
-  override def column: Int = iterator.column
-
-  override def row: Int = iterator.row
 
   override def toString: String = {
     val contentString = reifyToEnd.mkString("[", ", ", "]")
