@@ -4,8 +4,8 @@ import com.seanshubin.parser.domain.MatchResult.{MatchFailure, MatchSuccess}
 import com.seanshubin.parser.domain.ParseTree.ParseTreeBranch
 
 case class SequenceRule[A](ruleLookup: RuleLookup[A], thisRuleName: String, ruleNames: String*) extends Rule[A] {
-  override def apply(cursor: Cursor[A]): MatchResult[A] = {
-    def loop(soFar: List[MatchSuccess[A]], remaining: List[String], cursor: Cursor[A]): List[MatchResult[A]] = {
+  override def apply(cursor: Cursor[RowCol[A]]): MatchResult[A] = {
+    def loop(soFar: List[MatchSuccess[A]], remaining: List[String], cursor: Cursor[RowCol[A]]): List[MatchResult[A]] = {
       if (remaining.isEmpty) soFar
       else {
         val rule = ruleLookup.lookupRuleByName(remaining.head)

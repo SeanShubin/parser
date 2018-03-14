@@ -6,7 +6,7 @@ import com.seanshubin.parser.domain.ParseTree.ParseTreeBranch
 case class ZeroOrMoreRule[A](ruleLookup: RuleLookup[A], thisRuleName: String, ruleName: String) extends Rule[A] {
   private lazy val rule = ruleLookup.lookupRuleByName(ruleName)
 
-  override def apply(cursor: Cursor[A]): MatchResult[A] = {
+  override def apply(cursor: Cursor[RowCol[A]]): MatchResult[A] = {
     val firstResult = rule.apply(cursor)
     firstResult match {
       case x: MatchSuccess[A] => applyAfterFirst(x)

@@ -5,7 +5,9 @@ sealed trait ParseTree[A] {
 
   def toLines(depth: Int): Seq[String]
 
-  def children:Seq[ParseTree[A]]
+  def children: Seq[ParseTree[A]]
+
+  def map[B](f: A => B): ParseTree[B]
 }
 
 object ParseTree {
@@ -16,6 +18,8 @@ object ParseTree {
     override def toLines(depth: Int): Seq[String] = Seq(s"${indent(depth)}$ruleName $value")
 
     override def children: Seq[ParseTree[A]] = ???
+
+    override def map[B](f: A => B): ParseTree[B] = ParseTreeLeaf(ruleName, f(value))
   }
 
   //todo: rename to Branch
@@ -26,5 +30,8 @@ object ParseTree {
       val tail = children.flatMap(_.toLines(depth + 1))
       head +: tail
     }
+
+    override def map[B](f: A => B): ParseTree[B] = ParseTreeBranch(ruleName, children.map(child => child.map(f)))
   }
+
 }

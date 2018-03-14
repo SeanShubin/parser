@@ -3,7 +3,7 @@ package com.seanshubin.parser.domain
 import com.seanshubin.parser.domain.MatchResult.{MatchFailure, MatchSuccess}
 
 case class OneOfRule[A](ruleLookup: RuleLookup[A], thisRuleName: String, ruleNames: String*) extends Rule[A] {
-  override def apply(cursor: Cursor[A]): MatchResult[A] = {
+  override def apply(cursor: Cursor[RowCol[A]]): MatchResult[A] = {
     val successfulMatchFromCursor = successfulMatch(_: String, cursor)
     ruleNames.toStream.map(successfulMatchFromCursor).flatten.headOption match {
       case Some(matchResult) => matchResult
@@ -11,7 +11,7 @@ case class OneOfRule[A](ruleLookup: RuleLookup[A], thisRuleName: String, ruleNam
     }
   }
 
-  private def successfulMatch(ruleName: String, cursor: Cursor[A]): Option[MatchSuccess[A]] = {
+  private def successfulMatch(ruleName: String, cursor: Cursor[RowCol[A]]): Option[MatchSuccess[A]] = {
     val rule = ruleLookup.lookupRuleByName(ruleName)
     val matchResult = rule.apply(cursor)
     matchResult match {
@@ -20,7 +20,7 @@ case class OneOfRule[A](ruleLookup: RuleLookup[A], thisRuleName: String, ruleNam
     }
   }
 
-  private def failure(cursor: Cursor[A]): MatchResult[A] = {
+  private def failure(cursor: Cursor[RowCol[A]]): MatchResult[A] = {
     val ruleNamesString = ruleNames.mkString(", ")
     MatchFailure(cursor, thisRuleName, s"expected one of: $ruleNamesString")
   }

@@ -22,5 +22,7 @@ object RecursiveDescentPrototype extends App {
     override def value: Token = ???
 
     override def isEnd: Boolean = ???
+
+    override def map[B](f: Token => B): Cursor[B] = ???
   }
 }
